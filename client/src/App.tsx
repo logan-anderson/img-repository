@@ -7,12 +7,14 @@ import {
 import React, { useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import { ENDPOINT } from "./constants";
+// no types =(
+// @ts-ignore
+import { PickerOverlay } from "filestack-react";
 
-import { Image, Tag } from "./interfaces";
+import { API_KEY, ENDPOINT } from "./constants";
+import { Image, Tag, RootFileObj } from "./interfaces";
 import { ChooseTagOptions } from "./Tags";
+import { postData } from "./util/post";
 const Images: React.FC<{ images: Image[] | undefined }> = ({ images }) => {
   if (!images) {
     return <CircularProgress />;
@@ -20,7 +22,16 @@ const Images: React.FC<{ images: Image[] | undefined }> = ({ images }) => {
   return (
     <div>
       {images.map((img) => (
-        <div key={img.id}>{img.name}</div>
+        <div>
+          <div key={img.id}>{img.name}</div>
+          <img
+            src={img.url}
+            alt="img"
+            style={{
+              height: "30vh",
+            }}
+          />
+        </div>
       ))}
     </div>
   );
@@ -29,7 +40,6 @@ const Images: React.FC<{ images: Image[] | undefined }> = ({ images }) => {
 function App() {
   const [images, setImages] = useState<Image[] | undefined>();
   const [tags, setTags] = useState<Tag[]>([]);
-  console.log(tags);
   useEffect(() => {
     const fetchImages = async () => {
       setImages(undefined);
@@ -53,9 +63,35 @@ function App() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">Image Repository</Typography>
-          <Button color="inherit">Login</Button>
+          <Button
+            color="inherit"
+            variant="outlined"
+            style={{
+              marginLeft: "1.5rem",
+            }}
+          >
+            Add a new image
+          </Button>
         </Toolbar>
       </AppBar>
+      <PickerOverlay
+        apikey={API_KEY}
+        onSuccess={(res: RootFileObj) => {
+          const { filesUploaded } = res;
+          filesUploaded.forEach((file) => {
+            const img: Image = {
+              name: "test",
+              tags: [],
+              url: file.url,
+            };
+            postData(`${ENDPOINT}/img`, img).then((data) => {
+              console.log(data);
+            });
+          });
+
+          return console.log(res);
+        }}
+      />
       <Container maxWidth="md">
         <ChooseTagOptions setTags={setTags} freeSolo={false} />
         <Images images={images} />

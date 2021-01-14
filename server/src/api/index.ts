@@ -3,15 +3,28 @@ import { Router } from "express";
 import { prisma } from "../server";
 const api = Router();
 
-api.get("/test", (req, res) => {
+api.get("/nuke", async (req, res) => {
+  await prisma.image.deleteMany({
+    where: {
+      id: {
+        gt: 0,
+      },
+    },
+  });
+  await prisma.tag.deleteMany({
+    where: {
+      id: {
+        gt: 0,
+      },
+    },
+  });
   res.send({
-    test: true,
+    nuked: true,
   });
 });
 
 api.get("/img", async (req, res) => {
   const tags: Tag[] = JSON.parse((req.query.tags as string) || "[]");
-  console.log(tags);
   const imgs = await prisma.image.findMany({
     where: {
       tags: {

@@ -1,5 +1,7 @@
 # Image Repository
 
+> [See it in action and checkout the demo here](https://www.loom.com/share/6e3f717fe29c49a884e282fbe26e0068)
+
 This is a full stack image repository application. Images are stored in [FileStack](https://www.filestack.com/) and information about the images (url tags name, etc) are stored in a [postgres database](https://www.postgresql.org/). 
 
 In the client folder you will find front end code (React) for accessing the API and in the server folder you will find the API (express)

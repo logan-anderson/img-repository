@@ -1,30 +1,21 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, Grid } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 
-import { API_KEY, ENDPOINT } from "../constants";
-import { Image, Tag, RootFileObj } from "../interfaces";
+import { ENDPOINT } from "../constants";
+import { ImageDisplay } from "../ImageDisplay";
+import { Image, Tag } from "../interfaces";
 import { ChooseTagOptions } from "../Tags";
-import { postData } from "../util/post";
 
 const Images: React.FC<{ images: Image[] | undefined }> = ({ images }) => {
   if (!images) {
     return <CircularProgress />;
   }
   return (
-    <div>
+    <Grid container xs={12} spacing={5}>
       {images.map((img) => (
-        <div>
-          <div key={img.id}>{img.name}</div>
-          <img
-            src={img.url}
-            alt="img"
-            style={{
-              height: "30vh",
-            }}
-          />
-        </div>
+        <ImageDisplay image={img} />
       ))}
-    </div>
+    </Grid>
   );
 };
 

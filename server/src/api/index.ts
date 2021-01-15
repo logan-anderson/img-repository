@@ -3,63 +3,58 @@ import { Router } from "express";
 import { prisma } from "../server";
 const api = Router();
 
-api.get("/nuke", async (req, res) => {
-  await prisma.image.deleteMany({
-    where: {
-      id: {
-        gt: 0,
-      },
-    },
-  });
-  await prisma.tag.deleteMany({
-    where: {
-      id: {
-        gt: 0,
-      },
-    },
-  });
+api.get("/test", async (req, res) => {
+  // await prisma.image.deleteMany({
+  //   where: {
+  //     id: {
+  //       gt: 0,
+  //     },
+  //   },
+  // });
+  // await prisma.tag.deleteMany({
+  //   where: {
+  //     id: {
+  //       gt: 0,
+  //     },
+  //   },
+  // });
   res.send({
     nuked: true,
   });
 });
 
 api.get("/img", async (req, res) => {
-  const tags: Tag[] = JSON.parse((req.query.tags as string) || "[]");
-  console.log({ tags });
+  let tags: Tag[] = JSON.parse((req.query.tags as string) || "[]");
+  const queryName: string = (req.query?.name as string) || "";
+  if (tags.length == 0) {
+    // if no tags are provided show everything
+    tags = await prisma.tag.findMany();
+  }
   const ids = tags.map((tag) => tag.id);
 
-  const imgs =
-    tags.length > 0
-      ? await prisma.image.findMany({
-          where: {
-            tags: {
-              some: {
-                id: {
-                  in: ids,
-                },
+  const imgs = await prisma.image.findMany({
+    where: {
+      AND: [
+        {
+          tags: {
+            some: {
+              id: {
+                in: ids,
               },
             },
           },
-          include: {
-            tags: true,
+        },
+        {
+          name: {
+            contains: queryName,
           },
-        })
-      : await prisma.image.findMany({
-          include: {
-            tags: true,
-          },
-        });
-  console.log({ imgs });
-
-  //   const testImgs = await prisma.image.findMany({
-  //     where: {
-  //       tags: {
-  //         every: {
-  //           id: {},
-  //         },
-  //       },
-  //     },
-  //   });
+        },
+      ],
+    },
+    include: {
+      tags: true,
+    },
+  });
 
   res.send({
     imgs,

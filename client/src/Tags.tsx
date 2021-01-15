@@ -35,7 +35,11 @@ export const ChooseTagOptions: React.FC<{
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        marginBottom: "1rem",
+      }}
+    >
       <Autocomplete
         onChange={(e, value) => {
           const tags = value.map(normalizeTag);

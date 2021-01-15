@@ -1,4 +1,4 @@
-import { CircularProgress, Grid } from "@material-ui/core";
+import { CircularProgress, Grid, TextField } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 
 import { ENDPOINT } from "../constants";
@@ -22,6 +22,7 @@ const Images: React.FC<{ images: Image[] | undefined }> = ({ images }) => {
 export const HomePage: React.FC = () => {
   const [images, setImages] = useState<Image[] | undefined>();
   const [tags, setTags] = useState<Tag[]>([]);
+  const [name, setName] = useState("");
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -29,7 +30,9 @@ export const HomePage: React.FC = () => {
       if (!ENDPOINT) {
         throw new Error("REACT_APP_API_URL is not defined");
       }
-      const res = await fetch(`${ENDPOINT}/img?tags=${JSON.stringify(tags)}`);
+      const res = await fetch(
+        `${ENDPOINT}/img?tags=${JSON.stringify(tags)}&name=${name}`
+      );
       if (res.ok) {
         const { imgs } = await res.json();
         console.log({ imgs });
@@ -40,10 +43,22 @@ export const HomePage: React.FC = () => {
       console.error(e);
       throw e;
     });
-  }, [setImages, tags]);
+  }, [setImages, tags, name]);
 
   return (
     <>
+      <TextField
+        variant="filled"
+        fullWidth
+        label="Search by name"
+        onChange={(e) => {
+          console.log(e.target.value);
+          setName(e.target.value);
+        }}
+        style={{
+          marginTop: "1rem",
+        }}
+      />
       <ChooseTagOptions setTags={setTags} freeSolo={false} />
       <Images images={images} />
     </>

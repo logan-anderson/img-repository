@@ -25,18 +25,41 @@ api.get("/nuke", async (req, res) => {
 
 api.get("/img", async (req, res) => {
   const tags: Tag[] = JSON.parse((req.query.tags as string) || "[]");
-  const imgs = await prisma.image.findMany({
-    where: {
-      tags: {
-        every: {
-          AND: tags,
-        },
-      },
-    },
-    include: {
-      tags: true,
-    },
-  });
+  console.log({ tags });
+  const ids = tags.map((tag) => tag.id);
+
+  const imgs =
+    tags.length > 0
+      ? await prisma.image.findMany({
+          where: {
+            tags: {
+              some: {
+                id: {
+                  in: ids,
+                },
+              },
+            },
+          },
+          include: {
+            tags: true,
+          },
+        })
+      : await prisma.image.findMany({
+          include: {
+            tags: true,
+          },
+        });
+  console.log({ imgs });
+
+  //   const testImgs = await prisma.image.findMany({
+  //     where: {
+  //       tags: {
+  //         every: {
+  //           id: {},
+  //         },
+  //       },
+  //     },
+  //   });
 
   res.send({
     imgs,

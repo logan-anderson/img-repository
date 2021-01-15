@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Layout } from "./Layout";
 import { HomePage } from "./pages";
+import { UploadPage } from "./pages/upload";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
           <HomePage />
         </Route>
         <Route path="/upload">
-          <div>upload page</div>
+          <UploadPage />
         </Route>
       </Layout>
     </Router>

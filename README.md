@@ -7,8 +7,8 @@ This is a full stack image repository application. Images are stored in [FileSta
 In the client folder you will find front end code (React) for accessing the API and in the server folder you will find the API (express)
 
 ## The Stack
-- [Typescript]
-- [Node]
+- [Typescript](https://www.typescriptlang.org/)
+- [Node](https://nodejs.org/en/)
 - [Express](https://expressjs.com/)
 - [FileStack](https://www.filestack.com/)
 - [Prisma](https://www.prisma.io/)
